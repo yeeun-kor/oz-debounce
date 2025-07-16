@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "./App.css";
 
 function App() {
   const [query, setQuery] = useState("");
+  const [searchString, setSearchString] = useState("");
 
   const handleChange = (event) => {
     setQuery(event.target.value);
@@ -32,6 +33,7 @@ function App() {
           onChange={handleChange}
         />
       </div>
+      <p>{searchString}</p>
     </div>
   );
 }
