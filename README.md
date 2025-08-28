@@ -1,85 +1,77 @@
-# GitHub 과제 사용 방법
+# React 동적 랜더링 최적화 ( Debounce & Throttle )
 
-> ## 목차
->
-> [1. Fork](#fork)
->
-> [2. Clone](#clone)
->
-> [3. 과제 수행](#과제-수행)
->
-> [4. Push](#push)
->
-> [5. LMS 제출](#lms-제출)
->
-> [6. 정답 코드 보는 법](#정답-코드-보기)
+`디바운스와` `스로틀은` 무엇이냐?
+연속으로 발생하는 함수나 이벤트를 묶어서 처리하는 방식
+-> 랜더링 최적화를 위한 성능 향상 목적
 
-## Fork
+- 이유 : 함수나 이벤트 처리 하는데에, 매번 모든 함수랑 이벤트 갖다 긁어오면 작업 시간이 많이 걸림
 
-1. fork 버튼을 눌러 자신의 Repository로 복사합니다.
+- 묶어서 덩어리 만들어주자 !
 
-- `fork` 버튼을 클릭하여 `fork` 생성합니다.
-  ![fork 버튼](./README_SOURCES/images/how-to-fork.png)
-- 생성된 `fork`에서 `Owner`가 자신이 선택되어있는지를 확인합니다.
-- (`Repository name`과 `Description`은 자유롭게 작성해주셔도 괜찮습니다.)
-- create 버튼을 눌러 `fork`합니다.
-  ![fork 상세](./README_SOURCES/images/fork-detail.png)
-- `fork`된 자신의 Repository를 확인합니다.
-  ![fork 확인](./README_SOURCES/images/fork-confirm.png)
+<br/>
+<br/>
 
-## Clone
+## Debounce & Throttle란 ?
 
-2. 자신의 GitHub Repository에서 clone하여 로컬 환경으로 복사
+![디바운스,쓰로틀](image.png)
 
-- `clone`을 하기 위해 `<> Code` 버튼을 누릅니다.
-  ![clone 버튼](./README_SOURCES/images/how-to-clone.png)
-- 드랍다운 내용에서 `Local`의 `복사` 버튼을 눌러 GitHub Repository 주소를 복사합니다.
-  ![clone 버튼](./README_SOURCES/images/clone-detail.png)
+이미지에서 확인할 수 있듯이,
 
-- 터미널에서 아래 코드에서 `[복사한 GitHub Repository 주소]` 내용을 위에서 복사한 내용으로 바꾸어 실행합니다.
+- **디바운스는** 이벤트가 계속 발생이 되고 그걸 "끝까지 " 지켜 보고 함수로 묶어줌.
+- **쓰로틀은** 이벤트 중간에 발생할 때 중간중간에 함수로 묶어줌.
 
-```bash
-git clone [복사한 GitHub Repository 주소]
+<br/>
+<br/>
+
+### Debounce 대표예시
+
+- 마지막에 한 번에 묶어서 처리해도 상관 없을때
+- 예를 들어, 검색 입력창에서 사용자가 타이핑할 때마다 API 호출을 하지 않고, 입력이 멈춘 후에 한 번만 호출하는 데 유용하다.
+- 동적 렌더링에서 불필요한 리렌더나 `API` 요청을 줄여 성능을 최적화합니다.
+  **- "검색 자동 완성 "**
+
+<br/>
+
+### Throttle 대표예시
+
+- 중간 중간 끊기지 않는 인터랙션이 필요할 때
+- 함수가 일정 시간 간격(예: 200ms)으로만 한 번씩 실행되도록 제한하는 기법.
+- " 마우스 이동, 스크롤 이벤트"
+
+<br/>
+<br/>
+
+---
+
+# 과제 구현
+
+실질적으로 `Debounce` 와 `Throttle` 을 사용하려면 `setTime`() 함수를 사용해야한다.
+두개 모두, 일정 시간과 간격을 두고 함수의 실행을 제한하기 때문에 그러하다!
+근데 검색해보니, 커스텀 훅으로 구현하거나 라이브러리를 사용할 수도 있다네??
+
+<br/>
+
+## 내장 라이브러리 lodash 사용
+
+### `.debounce(func, [wait=0], [options={}])`
+
+- 사용자가 입력을 다 끝내고, 일정 시간이 지날 때까지 추가입력이 발생하지 않으면, 검색어 서버로 요청함
+- `debounce() `의 인자로 서버에 어떤 요청을 보낼지 이벤트 핸들러 함수 넣어주고, 시간 정하기
+
+```jsx
+//검색 입력의 경우 300~500ms가 사용자 경험상 더 자연스러울
+const debouncedOnChange = debounce(handleChange, 500);
 ```
 
-## 과제 수행
+#### 추가 최적화 작업
 
-3. 로컬 환경에서 과제 수행
+useCallback으로 메모제이션, useMemo로 캐싱하여 불필요한 debounce 생성 방지
 
-- 과제 정보와 과제 요구사항에 맞춰 과제를 진행합니다.
+- handleChange : 이벤트 핸들러 함수 , useCallback 으로 감싸서, 매 랜더시 새 함수 생성 방지
 
-## Push
+### 클린업 함수 사용 이유
 
-4. 자신의 GitHub Repository에 push
+`debounce와` `throttle은` 내부적으로 JavaScript의 `setTimeout` (또는 `setInterval에` 준하는 로직)을 사용해서 함수 실행을 지연시키거나 주기적으로 실행한다.
+이 과정에서 타이머 정리를 하지 않으면 **메모리 누수** 발생
 
-- add, commit, push를 활용하여 자신의 GitHub Repository에 수행한 과제를 저장합니다.
-- `add`
-
-```bash
-git add [파일 경로 (전체일 경우: .)]
-```
-
-- `commit`
-
-```bash
-git commit -m "[commit 메세지]"
-```
-
-- `push`
-
-```bash
-git push [remote name] [branch name]
-```
-
-## LMS 제출
-
-5. LMS에 GitHub Repository 링크를 복사하여 제출
-
-- GitHub Repository의 주소를 복사하여 LMS에 제출합니다.
-
-## 정답 코드 보기
-
-- 정답 코드는 answer 브랜치에 저장되어있습니다. 브랜치는 터미널에서 다음 명령어를 통해 이동할 수 있습니다.
-  ```bash
-  git checkout answer
-  ```
+- 메모리 누수 : `debounce나` `throttle이` 생성한 `setTimeout` 타이머가 메모리가 계속 남아서 데이터가 쌓임 -> 이는 앱 성능 저하로 이어질 수 있다.
