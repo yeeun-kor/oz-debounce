@@ -32,11 +32,7 @@ function App() {
 
   return (
     <div className="container">
-      <h1>
-        debounce와 throttle을
-        <br />
-        이용한 검색
-      </h1>
+      <h1>배포가 잘 되었을까요?</h1>
       <div>
         <h2>Debounce</h2>
         <input
