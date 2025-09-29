@@ -41,3 +41,6 @@ jobs:
         run: |
           aws s3 rm --recursive s3://oz-cloudfront-https
           aws s3 cp ./dist s3://oz-cloudfront-https/ --recursive
+
+      - name: CloudFront 캐시 무효화(ivalidation한국말로)
+        run: aws cloudfront create-invalidation --distribution-id E35NKTIO0AT6I --paths "/*"
