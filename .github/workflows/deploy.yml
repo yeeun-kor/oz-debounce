@@ -1,0 +1,29 @@
+name: CICD to S3 and Validate CloudFront
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  Deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 리액트 파일 repository 로 불러오기
+        uses: actions/checkout@4
+
+      - name: repository확인
+        run: ls
+
+      - name: 의존성 설치
+        run: npm i
+
+      - name: 파일 build 하기
+        run: npm run build
+
+      - name: build한 파일 제대로 불러와졌는지 확인
+        run: |
+          ls
+          echo "--------"
+          cd dist
+          ls
