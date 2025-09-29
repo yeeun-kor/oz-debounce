@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 리액트 파일 repository 로 불러오기
-        uses: actions/checkout@4
+        uses: actions/checkout@v4
 
       - name: repository확인
         run: ls
