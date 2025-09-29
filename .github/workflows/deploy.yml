@@ -38,5 +38,5 @@ jobs:
           aws-secret-access-key-id: ${{secrets.AWS_SECRET_ACCESS_KEY_ID}}
 
       - name: S3 버킷 전체 삭제
-        run : |
+        run: |
           aws s3 rm --recursive s3://oz-cloudfront-https
