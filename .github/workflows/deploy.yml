@@ -40,3 +40,4 @@ jobs:
       - name: S3 버킷 전체 삭제
         run: |
           aws s3 rm --recursive s3://oz-cloudfront-https
+          aws s3 cp ./dist s3://oz-cloudfront-https/ --recursive
